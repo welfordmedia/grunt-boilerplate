@@ -2,7 +2,7 @@
 
 A starting point for Grunt projects.
 
-## What id does
+## What it does
 
 * Minify images
 * Concatenate JavaScript files
