@@ -11,6 +11,7 @@ A starting point for Grunt projects.
 * Add vendor prefixes to CSS rules
 * Watch for file changes
 * Live reload your browser
+* Make your dreams come true
 
 ## How to install
 
