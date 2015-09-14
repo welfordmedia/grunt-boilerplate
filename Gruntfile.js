@@ -1,56 +1,60 @@
 module.exports = function(grunt) {
 
+    // Enable plugins.
+    require('load-grunt-tasks')(grunt);
+
     // Project configuration.
     grunt.initConfig({
+
+        // Metadata.
         pkg: grunt.file.readJSON('package.json'),
 
-        // Minify images
+        // Image build configuration.
         imagemin: {
-            dynamic: {
+            dist: {
                 files: [{
                     expand: true,
                     cwd: 'img/',
-                    src: ['*.{png,jpg,gif}'],
+                    src: ['**/*.{png,jpg,gif}'],
                     dest: 'img/'
                 }]
             }
         },
 
-        // Concatenate JavaScript files
+        // JavaScript build configuration.
         concat: {
             dist: {
                 src: [
-                    'components/jquery/dist/jquery.js',
+                    'bower_components/jquery/dist/jquery.js',
                     'js/main.js'
                 ],
                 dest: 'js/build/production.js'
             }
         },
 
-        // Uglify JavaScript files
         uglify: {
-            build: {
-                src: 'js/build/production.js',
-                dest: 'js/build/production.min.js'
-            }
-        },
-
-        // Compile Sass to CSS
-        sass: {
             dist: {
                 files: {
-                    'css/style.css': 'sass/style.scss'
+                    'js/build/production.min.js': ['js/build/production.js']
                 }
             }
         },
 
-        // Add vendor prefixes to CSS rules
+        // CSS build configuration.
+        sass: {
+            dist: {
+                files: {
+                    'css/main.css': 'scss/main.scss'
+                }
+            }
+        },
+
         postcss: {
             options: {
                 map: true,
                 processors: [
-                    require('autoprefixer-core')({browsers: 'last 2 version'}).postcss,
-                    require('csswring').postcss
+                    require('autoprefixer-core')({browsers: ['last 2 versions']}),
+                    require('cssnano')()
                 ]
             },
             dist: {
@@ -58,43 +62,28 @@ module.exports = function(grunt) {
             }
         },
 
-        // Watch
+        // Development configuration.
         watch: {
             options: {
                 livereload: true
             },
-            scripts: {
-                files: ['js/**/*.js'],
-                tasks: ['concat', 'uglify'],
-                options: {
-                    spawn: false
-                }
+            javascript: {
+                files: 'js/*.js',
+                tasks: ['concat', 'uglify']
             },
-            sass: {
-                files: ['sass/**/*.scss'],
-                tasks: ['sass', 'postcss'],
-                options: {
-                    spawn: false
-                }
+            css: {
+                files: 'scss/**/*.scss',
+                tasks: ['sass']
             }
         }
     });
 
-    // Load plugins
-    grunt.loadNpmTasks('grunt-contrib-imagemin');
-    grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-sass');
-    grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-postcss');
+    // Default tasks.
+    grunt.registerTask('default', ['imagemin', 'concat', 'uglify', 'sass', 'postcss', 'watch']);
 
-    // Default task
-    grunt.registerTask('default', [
-        'imagemin',
-        'concat',
-        'uglify',
-        'sass',
-        'postcss',
-        'watch'
-    ]);
+    // Development tasks.
+    grunt.registerTask('dev', ['watch']);
+
+    // Build tasks.
+    grunt.registerTask('build', ['imagemin', 'concat', 'uglify', 'sass', 'postcss']);
 };

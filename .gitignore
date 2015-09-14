@@ -1,14 +1,2 @@
-# Bower
-components
-
-# Css
-css
-
 # Grunt
 node_modules
-
-# JavaScript
-js/build
-
-# Sass
-.sass-cache
